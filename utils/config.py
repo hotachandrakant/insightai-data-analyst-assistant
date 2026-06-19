@@ -14,6 +14,29 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
+def get_secret(key: str, default: str = "") -> str:
+    """Resolve a secret from environment variables or Streamlit secrets.
+
+    Order of precedence:
+        1. OS environment variable (local dev: ``export KEY=...``)
+        2. Streamlit Cloud secrets (``st.secrets`` / ``.streamlit/secrets.toml``)
+
+    This lets the same code pick up API keys whether running locally or on
+    Streamlit Community Cloud (where secrets are set in the app dashboard).
+    """
+    value = os.getenv(key)
+    if value:
+        return value
+    try:
+        import streamlit as st
+
+        if key in st.secrets:
+            return str(st.secrets[key])
+    except Exception:  # noqa: BLE001 - secrets unavailable outside a Streamlit run
+        pass
+    return default
+
+
 @dataclass(frozen=True)
 class AppConfig:
     """Immutable runtime configuration."""
@@ -47,10 +70,10 @@ class AppConfig:
         "#F43F5E", "#A78BFA", "#F472B6", "#2DD4BF",
     )
 
-    # LLM integration (optional)
-    openai_api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY", ""))
-    gemini_api_key: str = field(default_factory=lambda: os.getenv("GEMINI_API_KEY", ""))
-    llm_provider: str = field(default_factory=lambda: os.getenv("LLM_PROVIDER", "auto"))
+    # LLM integration (optional) — read from env vars OR Streamlit Cloud secrets
+    openai_api_key: str = field(default_factory=lambda: get_secret("OPENAI_API_KEY"))
+    gemini_api_key: str = field(default_factory=lambda: get_secret("GEMINI_API_KEY"))
+    llm_provider: str = field(default_factory=lambda: get_secret("LLM_PROVIDER", "auto"))
 
     @property
     def llm_enabled(self) -> bool:

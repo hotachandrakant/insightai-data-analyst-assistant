@@ -191,8 +191,13 @@ def _llm_answer(df: pd.DataFrame, question: str) -> str | None:
             import google.generativeai as genai
 
             genai.configure(api_key=cfg.gemini_api_key)
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            return model.generate_content(prompt).text
+            # Try a current fast model, fall back to 1.5-flash for older SDKs.
+            for model_name in ("gemini-2.0-flash", "gemini-1.5-flash"):
+                try:
+                    model = genai.GenerativeModel(model_name)
+                    return model.generate_content(prompt).text
+                except Exception:  # noqa: BLE001
+                    continue
     except Exception:  # noqa: BLE001
         logger.warning("LLM fallback failed", exc_info=True)
     return None

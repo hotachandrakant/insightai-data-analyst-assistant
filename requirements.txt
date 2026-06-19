@@ -23,9 +23,12 @@ joblib==1.4.2
 fpdf2==2.8.1
 XlsxWriter==3.2.0
 
-# ── Optional LLM providers (app works without these) ────────────
+# ── LLM providers ───────────────────────────────────────────────
+# Gemini has a free tier — enabled by default so the chatbot can give
+# free-form (ChatGPT-style) answers once GEMINI_API_KEY is set.
+google-generativeai==0.8.3
+# OpenAI (paid) — uncomment to use GPT models instead of / alongside Gemini:
 # openai==1.54.0
-# google-generativeai==0.8.3
 
 # ── Optional auth / OTP delivery ────────────────────────────────
 # Email OTP uses Python's stdlib smtplib (set SMTP_* env vars) — no install needed.
