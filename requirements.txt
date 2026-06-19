@@ -1,0 +1,33 @@
+# ── InsightAI – Core ─────────────────────────────────────────────
+streamlit==1.39.0
+pandas==2.2.3
+numpy==1.26.4
+openpyxl==3.1.5
+
+# ── Visualization ───────────────────────────────────────────────
+plotly==5.24.1
+matplotlib==3.9.2
+seaborn==0.13.2
+kaleido==0.2.1            # static export of Plotly figures for reports
+
+# ── Statistics & ML ─────────────────────────────────────────────
+scipy==1.13.1
+scikit-learn==1.5.2
+statsmodels==0.14.4
+joblib==1.4.2
+
+# ── Forecasting (optional, app degrades gracefully if missing) ───
+# prophet==1.1.6
+
+# ── Reporting ───────────────────────────────────────────────────
+fpdf2==2.8.1
+XlsxWriter==3.2.0
+
+# ── Optional LLM providers (app works without these) ────────────
+# openai==1.54.0
+# google-generativeai==0.8.3
+
+# ── Optional auth / OTP delivery ────────────────────────────────
+# Email OTP uses Python's stdlib smtplib (set SMTP_* env vars) — no install needed.
+# Phone OTP via SMS requires Twilio (set TWILIO_* env vars):
+# twilio==9.3.6

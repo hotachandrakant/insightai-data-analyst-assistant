@@ -1,0 +1,14 @@
+# Streamlit theme — cinematic dark "liquid glass" aesthetic (RouteWise-inspired).
+[theme]
+base = "dark"
+primaryColor = "#6366F1"
+backgroundColor = "#05060A"
+secondaryBackgroundColor = "#0B0E16"
+textColor = "#F8FAFC"
+font = "sans serif"
+
+[server]
+maxUploadSize = 200
+
+[browser]
+gatherUsageStats = false
