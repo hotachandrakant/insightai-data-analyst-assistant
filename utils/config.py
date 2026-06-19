@@ -8,7 +8,7 @@ keys) to be injected at deploy time.
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -70,10 +70,20 @@ class AppConfig:
         "#F43F5E", "#A78BFA", "#F472B6", "#2DD4BF",
     )
 
-    # LLM integration (optional) — read from env vars OR Streamlit Cloud secrets
-    openai_api_key: str = field(default_factory=lambda: get_secret("OPENAI_API_KEY"))
-    gemini_api_key: str = field(default_factory=lambda: get_secret("GEMINI_API_KEY"))
-    llm_provider: str = field(default_factory=lambda: get_secret("LLM_PROVIDER", "auto"))
+    # LLM integration (optional) — resolved LAZILY (env vars OR Streamlit secrets).
+    # These are properties, not fields, so config construction never touches
+    # ``st.secrets`` at import time (which would run before ``st.set_page_config``).
+    @property
+    def openai_api_key(self) -> str:
+        return get_secret("OPENAI_API_KEY")
+
+    @property
+    def gemini_api_key(self) -> str:
+        return get_secret("GEMINI_API_KEY")
+
+    @property
+    def llm_provider(self) -> str:
+        return get_secret("LLM_PROVIDER", "auto")
 
     @property
     def llm_enabled(self) -> bool:
