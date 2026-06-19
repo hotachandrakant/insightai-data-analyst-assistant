@@ -188,18 +188,33 @@ def _llm_answer(df: pd.DataFrame, question: str) -> str | None:
             )
             return resp.choices[0].message.content
         if cfg.gemini_api_key:
-            import google.generativeai as genai
+            try:
+                import google.generativeai as genai
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Gemini SDK missing", exc_info=True)
+                return ("⚠️ The Gemini library isn't installed on the server. "
+                        "Make sure `google-generativeai` is in requirements.txt, "
+                        f"then reboot the app. (Details: {exc})")
 
             genai.configure(api_key=cfg.gemini_api_key)
-            # Try a current fast model, fall back to 1.5-flash for older SDKs.
-            for model_name in ("gemini-2.0-flash", "gemini-1.5-flash"):
+            # Try current models first, fall back for older SDKs/keys.
+            last_err = None
+            for model_name in ("gemini-2.5-flash", "gemini-2.0-flash",
+                               "gemini-flash-latest", "gemini-1.5-flash"):
                 try:
                     model = genai.GenerativeModel(model_name)
-                    return model.generate_content(prompt).text
-                except Exception:  # noqa: BLE001
+                    text = model.generate_content(prompt).text
+                    if text:
+                        return text
+                except Exception as exc:  # noqa: BLE001
+                    last_err = exc
                     continue
-    except Exception:  # noqa: BLE001
+            logger.warning("All Gemini models failed: %s", last_err)
+            return (f"⚠️ Gemini couldn't answer this (API error: {last_err}). "
+                    "Check that your API key is valid and has quota.")
+    except Exception as exc:  # noqa: BLE001
         logger.warning("LLM fallback failed", exc_info=True)
+        return f"⚠️ LLM error: {exc}"
     return None
 
 
