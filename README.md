@@ -1,6 +1,7 @@
 <!-- ═══════════════════════ HEADER ════════════════════════ -->
 <a name="top"></a>
 
+
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6366F1,50:22D3EE,100:FBBF24&height=210&section=header&text=InsightAI&fontSize=72&fontColor=ffffff&fontAlignY=36&desc=AI%20Powered%20Data%20Analyst%20Assistant&descAlignY=58&descSize=20&animation=fadeIn" alt="InsightAI" />
 </p>
